@@ -5,5 +5,6 @@ int main()
     const char* e;
     int s;
     e = TestQueue(s);
-    printf("%s\n%d", e, s);
+    std::cout << s;
+    std::cout << e;
 }
