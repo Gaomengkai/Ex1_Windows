@@ -1,6 +1,12 @@
 #include "Ex1.h"
 
-void initQueue(Queue* const p, int m)//初始化p指队列：最多申请m个元素
+
+/// <summary>
+/// 初始化队列
+/// </summary>
+/// <param name="p">队列</param>
+/// <param name="m">最多申请的元素数量</param>
+void initQueue(Queue* const p, int m)
 {
 	if (m <= 0)//若m不合法
 	{
@@ -17,7 +23,13 @@ void initQueue(Queue* const p, int m)//初始化p指队列：最多申请m个元素
 	p->head = p->tail = 0;
 }
 
-void initQueue(Queue* const p, const Queue& s)//用s深拷贝初始化p指队列
+
+/// <summary>
+/// 深拷贝初始化队列
+/// </summary>
+/// <param name="p">目标队列</param>
+/// <param name="s">源队列</param>
+void initQueue(Queue* const p, const Queue& s)
 {
 	if (p->elems)//若p已存在，释放原内存防止内存泄漏
 	{
@@ -36,7 +48,13 @@ void initQueue(Queue* const p, const Queue& s)//用s深拷贝初始化p指队列
 	}
 }
 
-void initQueue(Queue* const p, Queue&& s)//用s移动初始化p指队列
+
+/// <summary>
+/// 用s移动初始化p指队列
+/// </summary>
+/// <param name="p">目标队列</param>
+/// <param name="s">源</param>
+void initQueue(Queue* const p, Queue&& s)
 {
 	if (p->elems)//若p已存在，释放原内存防止内存泄漏
 	{
@@ -53,16 +71,35 @@ void initQueue(Queue* const p, Queue&& s)//用s移动初始化p指队列
 	s.head = s.tail = 0;
 }
 
-int  number(const Queue* const p)//返回p指队列的实际元素个数
+
+/// <summary>
+/// 返回p指队列的实际元素个数
+/// </summary>
+/// <param name="p">队列</param>
+/// <returns>元素个数</returns>
+int  number(const Queue* const p)
 {
 	return p->tail >= p->head ? p->tail - p->head : p->tail + p->max - p->head;
 }
 
-int  size(const Queue* const p)//返回p指队列申请的最大元素个数max
+
+/// <summary>
+/// 返回p指队列申请的最大元素个数max
+/// </summary>
+/// <param name="p">队列</param>
+/// <returns>最大元素个数</returns>
+int  size(const Queue* const p)
 {
 	return p->max;
 }
 
+
+/// <summary>
+/// 将e入队列尾部，并返回p
+/// </summary>
+/// <param name="p"></param>
+/// <param name="e"></param>
+/// <returns></returns>
 Queue* const enter(Queue* const p, int e)//将e入队列尾部，并返回p
 {
 	if ((p->tail + 1) % p->max == p->head)//判满
