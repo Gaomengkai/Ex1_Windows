@@ -10,15 +10,15 @@ void initQueue(Queue* const p, int m)
 {
 	if (m <= 0)//若m不合法
 	{
-		throw"Wrong argument";
+		throw "Wrong argument";
 	}
 	if (p->elems)//若p已存在，释放原内存防止内存泄漏
 	{
 		*(int*)&p->max = 0;
-		free(*(int**)&p->elems);
+		free(p->elems);
 		*(int**)&p->elems = nullptr;
 	}
-	*(int**)&p->elems = (int*)malloc(m * sizeof(int));
+	*(int**)&p->elems = new int[m];
 	*(int*)&p->max = m;
 	p->head = p->tail = 0;
 }
@@ -31,10 +31,9 @@ void initQueue(Queue* const p, int m)
 /// <param name="s">源队列</param>
 void initQueue(Queue* const p, const Queue& s)
 {
-	if (p->elems)//若p已存在，释放原内存防止内存泄漏
-	{
+	if (p->elems) {
 		*(int*)&p->max = 0;
-		free(*(int**)&p->elems);
+		free(p->elems);
 		*(int**)&p->elems = nullptr;
 	}
 	*(int*)&p->max = s.max;
@@ -42,8 +41,7 @@ void initQueue(Queue* const p, const Queue& s)
 	p->head = s.head;
 	p->tail = s.tail;
 	int i;
-	for (i = 0; i < p->max; i++)
-	{
+	for (i = 0; i < p->max; i++) {
 		p->elems[i] = s.elems[i];
 	}
 }
@@ -56,8 +54,7 @@ void initQueue(Queue* const p, const Queue& s)
 /// <param name="s">源</param>
 void initQueue(Queue* const p, Queue&& s)
 {
-	if (p->elems)//若p已存在，释放原内存防止内存泄漏
-	{
+	if (p->elems) {
 		*(int*)&p->max = 0;
 		free(*(int**)&p->elems);
 		*(int**)&p->elems = nullptr;
@@ -103,8 +100,7 @@ int  size(const Queue* const p)
 Queue* const enter(Queue* const p, int e)
 {
 	// FULL?
-	if ((p->tail + 1) % p->max == p->head)
-	{
+	if ((p->tail + 1) % p->max == p->head) {
 		throw "Queue is full!";
 	}
 	else
@@ -124,12 +120,10 @@ Queue* const enter(Queue* const p, int e)
 /// <returns>pop之后的</returns>
 Queue* const leave(Queue* const p, int& e)
 {
-	if (p->head == p->tail)
-	{
+	if (p->head == p->tail) {
 		throw "Queue is empty!";
 	}
-	else
-	{
+	else {
 		e = p->elems[p->head];
 		p->head = (p->head + 1) % p->max;
 		return p;
@@ -174,12 +168,8 @@ Queue* const assign(Queue* const p, const Queue& q)
 Queue* const assign(Queue* const p, Queue&& q)
 {
 	// Same Queue, Same Result.
-	if (p->elems == q.elems)
-	{
-		return p;
-	}
-	if (p->elems)
-	{
+	if (p->elems == q.elems) return p; 
+	if (p->elems) {
 		free(p->elems);
 		*(int**)&p->elems = nullptr;
 	}
@@ -220,8 +210,7 @@ char* print(const struct Queue* const p, char* s)
 void destroyQueue(Queue* const p)
 {
 	// Release Memory
-	if (p->elems)
-	{
+	if (p->elems) {
 		free(p->elems);
 		*(int**)&p->elems = nullptr;
 	}
