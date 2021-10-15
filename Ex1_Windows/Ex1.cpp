@@ -38,7 +38,7 @@ void initQueue(Queue* const p, const Queue& s)
 		*(int**)&p->elems = nullptr;
 	}
 	*(int*)&p->max = s.max;
-	*(int**)&p->elems = (int*)malloc(p->max * sizeof(int));
+	*(int**)&p->elems = new int[s.max];
 	p->head = s.head;
 	p->tail = s.tail;
 	int i;
@@ -100,9 +100,10 @@ int  size(const Queue* const p)
 /// <param name="p"></param>
 /// <param name="e"></param>
 /// <returns></returns>
-Queue* const enter(Queue* const p, int e)//将e入队列尾部，并返回p
+Queue* const enter(Queue* const p, int e)
 {
-	if ((p->tail + 1) % p->max == p->head)//判满
+	// FULL?
+	if ((p->tail + 1) % p->max == p->head)
 	{
 		throw "Queue is full!";
 	}
@@ -115,9 +116,15 @@ Queue* const enter(Queue* const p, int e)//将e入队列尾部，并返回p
 }
 
 
-Queue* const leave(Queue* const p, int& e)//从队首出元素到e，并返回p
+/// <summary>
+/// 从队首出元素到e，并返回p
+/// </summary>
+/// <param name="p">传入的队列</param>
+/// <param name="e">保存元素的位置</param>
+/// <returns>pop之后的</returns>
+Queue* const leave(Queue* const p, int& e)
 {
-	if (p->head == p->tail)//判空
+	if (p->head == p->tail)
 	{
 		throw "Queue is empty!";
 	}
@@ -130,22 +137,25 @@ Queue* const leave(Queue* const p, int& e)//从队首出元素到e，并返回p
 }
 
 
-Queue* const assign(Queue* const p, const Queue& q)//深拷贝赋s给队列并返回p
+/// <summary>
+/// 深拷贝赋s给队列并返回p
+/// </summary>
+/// <param name="p">队列</param>
+/// <param name="q"></param>
+/// <returns></returns>
+Queue* const assign(Queue* const p, const Queue& q)
 {
-	if (p->elems == q.elems)//若传入的两个参数是同一个队列
-	{
+	// Same Queue, Same Result.
+	if (p->elems == q.elems) {
 		return p;
 	}
-	if (*(int**)&p->elems)//若p已存在，释放原内存防止内存泄漏
-	{
-		free(*(int**)&p->elems);
+	if (p->elems) {
+		free(p->elems);
 		*(int**)&p->elems = nullptr;
 	}
-	*(int**)&p->elems = (int*)malloc(q.max * sizeof(int));
+	*(int**)&p->elems = new int[q.max];
 	*(int*)&p->max = q.max;
-	int i;
-	for (i = 0; i < p->max; i++)
-	{
+	for (int i = 0; i < p->max; i++) {
 		p->elems[i] = q.elems[i];
 	}
 	p->head = q.head;
@@ -154,15 +164,23 @@ Queue* const assign(Queue* const p, const Queue& q)//深拷贝赋s给队列并返回p
 }
 
 
-Queue* const assign(Queue* const p, Queue&& q)//移动赋s给队列并返回p
+
+/// <summary>
+/// 移动赋s给队列并返回p
+/// </summary>
+/// <param name="p">目标</param>
+/// <param name="q">源</param>
+/// <returns>目标</returns>
+Queue* const assign(Queue* const p, Queue&& q)
 {
-	if (p->elems == q.elems)//若传入的两个参数是同一个队列
+	// Same Queue, Same Result.
+	if (p->elems == q.elems)
 	{
 		return p;
 	}
-	if (*(int**)&p->elems)//若p已存在，释放原内存防止内存泄漏
+	if (p->elems)
 	{
-		free(*(int**)&p->elems);
+		free(p->elems);
 		*(int**)&p->elems = nullptr;
 	}
 	*(int**)&p->elems = q.elems;
@@ -175,7 +193,15 @@ Queue* const assign(Queue* const p, Queue&& q)//移动赋s给队列并返回p
 	return p;
 }
 
-char* print(const struct Queue* const p, char* s)//打印p指队列至s并返回s
+
+
+/// <summary>
+/// 打印p指队列至s并返回s
+/// </summary>
+/// <param name="p">想要打印的队列</param>
+/// <param name="s">目标字符串</param>
+/// <returns>目标字符串</returns>
+char* print(const struct Queue* const p, char* s)
 {
 	int m = p->max;
 	for (int i = p->head; i != p->tail; i = (i + 1) % m) {
@@ -185,11 +211,18 @@ char* print(const struct Queue* const p, char* s)//打印p指队列至s并返回s
 	return s;
 }
 
-void destroyQueue(Queue* const p)//销毁p指向的队列
+
+
+/// <summary>
+/// 销毁p指向的队列
+/// </summary>
+/// <param name="p">要销毁的队列</param>
+void destroyQueue(Queue* const p)
 {
-	if (*(int**)&p->elems)//若p已存在，释放原内存防止内存泄漏，防止释放空指针
+	// Release Memory
+	if (p->elems)
 	{
-		free(*(int**)&p->elems);
+		free(p->elems);
 		*(int**)&p->elems = nullptr;
 	}
 	*(int*)&p->max = 0;
